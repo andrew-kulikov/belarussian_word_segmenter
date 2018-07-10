@@ -10,12 +10,12 @@ class Segmenter(object):
     """Segmenter
     Belarussian word segmentation model
     """
-    ALPHABET = set("ʼ'’йцукенгшўзхфываёпролджэячсмітьбюqwertyuiopasdfghjklzxcvbnm0123456789XVI")
-    UNIGRAMS_FILENAME = op.join(
+    __ALPHABET = set("ʼ'’йцукенгшўзхфываёпролджэячсмітьбюqwertyuiopasdfghjklzxcvbnm0123456789XVI")
+    __UNIGRAMS_FILENAME = op.join(
         op.dirname(op.realpath(__file__)),
         'unigrams.txt',
     )
-    BIGRAMS_FILENAME = op.join(
+    __BIGRAMS_FILENAME = op.join(
         op.dirname(op.realpath(__file__)),
         'bigrams.txt',
     )
@@ -31,32 +31,17 @@ class Segmenter(object):
         Try to load model from models/unigrams.pkl, if file does not exist
         load from ./unigrams.txt and create binary file for model
         """
-        if os.path.isfile('models/unigrams.pkl'):
-            self.unigrams.update(self.load_obj('unigrams'))
+        if not op.exists('data'):
+            os.mkdir('data')
+        if os.path.isfile(op.join('data', 'unigrams.pkl')):
+            self.unigrams.update(self._load_obj('unigrams'))
         else:
-            self.unigrams.update(self.parse(self.UNIGRAMS_FILENAME))
-            self.save_obj(self.unigrams, 'unigrams')
+            self.unigrams.update(self.parse(self.__UNIGRAMS_FILENAME))
+            save_obj(self.unigrams, 'unigrams')
         self.total = len(self.unigrams)
         self.max_word_length = max(map(len, self.unigrams.keys()))
 
-    def save_obj(self, obj, name):
-        """Saves the model in binary format"""
-        with open('models/'+ name + '.pkl', 'wb+') as f:
-            pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-
-    def load_obj(self, name):
-        """Loads the model from binary format"""
-        with open('models/' + name + '.pkl', 'rb+') as f:
-            return pickle.load(f)
-
-    @staticmethod
-    def parse(filename):
-        "Read `filename` and parse tab-separated file of word and count pairs."
-        with io.open(filename, encoding='utf-8') as reader:
-            lines = (line.split('\t') for line in reader)
-            return dict((word, float(number)) for word, number in lines)
-
-    def score(self, word, previous=None):
+    def score(self, word):
         """Probability of the given word"""
         unigrams = self.unigrams
         total = self.total
@@ -71,10 +56,10 @@ class Segmenter(object):
         """Word segmentation
         Implemented Viterbi dynamic pogramming algorithm for uniram model
         Returns a list of words (most possible)
-        in the same case as original without punctuation
+        in the same case and order as original without punctuation
         """
         clean_text = self.clean(text)
-        best_edge = [(0, 0) for i in range(len(clean_text) + 1)]
+        best_edge = [(0, 0) for _ in range(len(clean_text) + 1)]
         best_edge[0] = None
         best_score = np.zeros(len(clean_text) + 1)
 
@@ -109,7 +94,7 @@ class Segmenter(object):
         """Clean given text
         Return text with non-alphanumeric characters removed. Register ignored
         """
-        alphabet = cls.ALPHABET
+        alphabet = cls.__ALPHABET
         letters = (letter for letter in text if letter.lower() in alphabet)
         return ''.join(letters)
 
