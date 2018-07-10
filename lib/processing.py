@@ -26,10 +26,13 @@ class OneGramDict(dict):
             return 1.0 / (self.gramCount * 10**(len(word) - 2))
 
 
-def remove_symbols(s):
-    for sym in symbols:
-        s = s.replace(sym, ' ')
-    return s.lower()
+def clear_text(text):
+    """Clean given text
+    Return text with non-alphanumeric characters removed. Register ignored
+    """
+    alphabet = set("ʼ'’йцукенгшўзхфываёпролджэячсмітьбюqwertyuiopasdfghjklzxcvbnm0123456789XVI")
+    letters = (letter for letter in text if letter.lower() in alphabet)
+    return ''.join(letters)
 
 
 def split_pairs(word):
@@ -40,7 +43,7 @@ def form_unigrams():
     with open('train-bel.txt', encoding='utf-8') as f:
         unigrams = {}
         for line in f.readlines():
-            line = remove_symbols(line)
+            line = clear_text(line)
             words = line.split()
             for word in words:
                 unigrams[word] = unigrams.get(word, 0) + 1

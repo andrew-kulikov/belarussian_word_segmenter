@@ -1,7 +1,7 @@
 import os.path as op
 import os
 import numpy as np
-from .processing import load_obj, save_obj, parse
+from .processing import load_obj, save_obj, parse, clear_text
 
 
 class Segmenter(object):
@@ -56,7 +56,7 @@ class Segmenter(object):
         Returns a list of words (most possible)
         in the same case and order as original without punctuation
         """
-        clean_text = self.clean(text)
+        clean_text = clear_text(text)
         best_edge = [(0, 0)] * (len(clean_text) + 1)
         best_edge[0] = None
         best_score = np.zeros(len(clean_text) + 1)
@@ -86,15 +86,6 @@ class Segmenter(object):
             next_edge = best_edge[next_edge[0]]
         words.reverse()
         return words
-
-    @classmethod
-    def clean(cls, text):
-        """Clean given text
-        Return text with non-alphanumeric characters removed. Register ignored
-        """
-        alphabet = cls.__ALPHABET
-        letters = (letter for letter in text if letter.lower() in alphabet)
-        return ''.join(letters)
 
     def dest(self):
         """Release memory"""
