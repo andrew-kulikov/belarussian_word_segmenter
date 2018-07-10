@@ -1,5 +1,6 @@
-from lib import form_bigrams, form_unigrams, Segmenter, symbols
+from lib import form_bigrams, form_unigrams, Segmenter, SYMBOLS
 import time
+
 
 def main():
     segmenter = Segmenter()
@@ -18,7 +19,7 @@ def main():
             k = 0
             while True:
                 if k < len(line):
-                    if line[k] in symbols:
+                    if line[k] in SYMBOLS:
                         if line[k] == '-' or line[k] == '–' or line[k] == '—' or line[k] == '(' or line[k] == '«':
                             res.append(' ')
                         res.append(line[k])
@@ -30,7 +31,7 @@ def main():
                 if (sym == '"' or sym == '«' or sym == '»' or sym == '(' or sym == '%') and new_line[j] == ' ':
                     j += 1
                     continue
-                if sym == '»' and line[k] not in symbols:
+                if sym == '»' and line[k] not in SYMBOLS:
                     res.append(' ')
                 if sym == '—' or sym == '–' and new_line[j] != ' ':
                     res.append(' ')

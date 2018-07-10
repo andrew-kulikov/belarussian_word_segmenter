@@ -76,9 +76,9 @@ def save_obj(obj, name):
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
-def load_obj(name):
+def load_obj(name, path):
     """Loads the model from binary format"""
-    with open(op.join('data', name + '.pkl'), 'rb+') as f:
+    with open(op.join(path, name + '.pkl'), 'rb+') as f:
         return pickle.load(f)
 
 
@@ -102,4 +102,4 @@ def word_seq_fitness(words):
                             (np.log10(single_word_prob(w)) for w in words))
 
 
-single_word_prob = OneGramDict()
+# single_word_prob = OneGramDict()

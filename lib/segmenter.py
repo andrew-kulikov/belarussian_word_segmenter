@@ -4,17 +4,28 @@ import numpy as np
 from .processing import load_obj, save_obj, parse, clear_text
 
 
+SYMBOLS = ['-', '–', '—', ',', '.', '?', '!', '\"', '/', '_', '‚', '™', '>',
+           '{', '}', '[', ']', '(', ')', ':', '#', '@', '^', '%', '\\', '<',
+           ';', '»', '«', '“', '„', '№', '+', '*', '$', '…', '”', '~']
+
+
 class Segmenter(object):
     """Segmenter
     Belarussian word segmentation model
     """
     __ALPHABET = set("ʼ'’йцукенгшўзхфываёпролджэячсмітьбюqwertyuiopasdfghjklzxcvbnm0123456789XVI")
+    __DATA_FOLDER = op.join(
+        op.dirname(op.realpath(__file__)),
+        'data'
+    )
     __UNIGRAMS_FILENAME = op.join(
         op.dirname(op.realpath(__file__)),
+        'data',
         'unigrams.txt',
     )
     __BIGRAMS_FILENAME = op.join(
         op.dirname(op.realpath(__file__)),
+        'data',
         'bigrams.txt',
     )
 
@@ -31,8 +42,8 @@ class Segmenter(object):
         """
         if not op.exists('data'):
             os.mkdir('data')
-        if os.path.isfile(op.join('data', 'unigrams.pkl')):
-            self.unigrams.update(load_obj('unigrams'))
+        if os.path.isfile(op.join(self.__DATA_FOLDER, 'unigrams.pkl')):
+            self.unigrams.update(load_obj('unigrams', self.__DATA_FOLDER))
         else:
             self.unigrams.update(parse(self.__UNIGRAMS_FILENAME))
             save_obj(self.unigrams, 'unigrams')
@@ -85,13 +96,9 @@ class Segmenter(object):
             words.append(word)
             next_edge = best_edge[next_edge[0]]
         words.reverse()
+
         return words
 
     def dest(self):
         """Release memory"""
         del self.unigrams
-
-
-symbols = ['-', '–', '—', ',', '.', '?', '!', '\"', '/', '_', '‚', '™', '>',
-           '{', '}', '[', ']', '(', ')', ':', '#', '@', '^', '%', '\\', '<',
-           ';', '»', '«', '“', '„', '№', '+', '*', '$', '…', '”', '~']
