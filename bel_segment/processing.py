@@ -1,5 +1,3 @@
-import numpy as np
-import functools
 import pickle
 import os.path as op
 import io
@@ -58,7 +56,7 @@ def form_bigrams():
     with open('train-bel.txt', encoding='utf-8') as f:
         bigrams = {}
         for line in f.readlines():
-            line = remove_symbols(line)
+            line = clear_text(line)
             words = line.split()
             for i in range(len(words) - 1):
                 bigram = words[i] + ' ' + words[i + 1]
@@ -88,7 +86,7 @@ def parse(filename):
         lines = (line.split('\t') for line in reader)
         return dict((word, float(number)) for word, number in lines)
 
-
+"""
 def segment(word):
     if not word:
         return []
@@ -103,3 +101,4 @@ def word_seq_fitness(words):
 
 
 # single_word_prob = OneGramDict()
+"""

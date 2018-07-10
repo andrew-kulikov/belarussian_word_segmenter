@@ -1,4 +1,4 @@
-from lib import form_bigrams, form_unigrams, Segmenter, SYMBOLS
+from bel_segment import form_bigrams, form_unigrams, Segmenter, SYMBOLS
 import time
 
 
