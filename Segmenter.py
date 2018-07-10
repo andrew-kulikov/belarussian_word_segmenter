@@ -78,25 +78,25 @@ class Segmenter(object):
         best_edge[0] = None
         best_score = np.zeros(len(clean_text) + 1)
 
-        #forward step - find the score of the best path to each node
+        # forward step - find the score of the best path to each node
         for word_end in range(1, len(clean_text) + 1):
-            #initializes best probability with big number
+            # initializes best probability with big number
             best_score[word_end] = 10**10
             start_j = max(0, word_end - self.max_word_length)
             for word_start in range(start_j, word_end):
                 word = clean_text[word_start:word_end].lower()
                 if word in self.unigrams or len(word) == 1:
                     prob = self.score(word)
-                    #computing negative log probability
+                    # computing negative log probability
                     cur_score = best_score[word_start] - np.log10(prob)
                     if cur_score < best_score[word_end]:
-                        #saves the best segmentation for a word ending in word_end
+                        # saves the best segmentation for a word ending in word_end
                         best_score[word_end] = cur_score
                         best_edge[word_end] = (word_start, word_end)
 
         words = []
         next_edge = best_edge[-1]
-        #backward step - create the best path
+        # backward step - create the best path
         while next_edge:
             word = clean_text[next_edge[0]:next_edge[1]]
             words.append(word)
@@ -130,7 +130,7 @@ def main():
     start_time = time.time()
 
     with open('test-bel.txt', encoding='utf-8') as infile, \
-         open('kek_gold.txt', 'w+', encoding='utf-8') as outfile:
+            open('kek_gold.txt', 'w+', encoding='utf-8') as outfile:
 
         for line in infile.readlines():
             line = line.replace(chr(8203), '').replace(' ', '').strip()
@@ -169,7 +169,6 @@ def main():
                 print('Progress: ', i, end=' ')
         print('Time elapsed:', time.time() - start_time)
         segmenter.dest()
-
 
 
 if __name__ == '__main__':

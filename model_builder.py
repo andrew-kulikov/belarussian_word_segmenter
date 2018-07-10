@@ -30,7 +30,7 @@ def preprocess(s):
 
 
 def split_pairs(word):
-   return [(word[:i+1], word[i+1:]) for i in range(len(word))]
+    return [(word[:i+1], word[i+1:]) for i in range(len(word))]
 
 
 def form_unigrams():
@@ -65,22 +65,25 @@ def form_bigrams():
 
 
 def segment(word):
-   if not word: return []
-   all_segmentations = [[first] + segment(rest)
-                       for (first, rest) in split_pairs(word)]
-   return max(all_segmentations, key=word_seq_fitness)
+    if not word:
+        return []
+    all_segmentations = [[first] + segment(rest)
+                         for (first, rest) in split_pairs(word)]
+    return max(all_segmentations, key=word_seq_fitness)
 
 
 def word_seq_fitness(words):
-   return functools.reduce(lambda x,y: x+y,
-     (math.log10(single_word_prob(w)) for w in words))
+    return functools.reduce(lambda x,y: x+y,
+                            (math.log10(single_word_prob(w)) for w in words))
+
 
 single_word_prob = OneGramDist()
 
+
 def main():
     form_unigrams()
-            
-    
-    
+
+
+
 if __name__ == '__main__':
     main()
